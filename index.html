@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-----------Important meta tags----------->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Junior Frontend Mentor Challenge to build a Age Calculator App">
+    <meta property="og:description" content="Junior Frontend Mentor Challenge to build a Age Calculator App">
+    <meta name="author" content="Ogunsanwo David Oluwadamilare">
+    <meta property="og:author" content="Ogunsanwo David Oluwadamilare">
+    <meta property="og:title" content="Age Calculator App">
+
+    <!-----------Title---------->
+    <title>Age Calculator App</title>
+
+    <!------------Favicon------------->
+    <link rel="shortcut icon" href="./assets/images/favicon-32x32.png" type="image/x-icon">
+
+    <!-------Linked stylesheets, fonts, icons and libraries------------>
+    <link rel="stylesheet" href="./dist/output.css">
+    
+
+    <!----------Fontawesome icons---------->
+
+
+    <!--Added styles-->
+
+    <style>
+        .error-border{
+            border-color: hsl(0, 100%, 67%);
+        }
+
+        .error-color{
+            color: hsl(0, 100%, 67%);
+        }
+    </style>
+
+</head>
+
+<body class="w-full p-4 pt-10 bg-offwhite sm:h-[100vh] sm:w-[100vw] sm:flex sm:items-center sm:justify-center">
+    <div class="flex flex-col w-full px-4 py-10 bg-white rounded-3xl rounded-br-[4rem] sm:max-w-[580px] sm:rounded-[2rem] sm:rounded-br-[6rem] md:max-w-650px">
+        <form class="flex flex-col">
+            <div class="flex space-x-4 sm:w-[80%]">
+                <div class="flex flex-col">
+                    <label for="day" class="font-poppins font-bold text-xs text-smokeygrey">DAY</label>
+                    <input type="text" id="day" name="day" class="w-full mt-2 rounded-lg border-[1px] border-lightgrey p-2  text-offblack text-base font-poppins font-bold focus:border-smokeygrey  placeholder:text-base placeholder:text-smokeygrey placeholder:font-bold placeholder:font-poppins hover:border-offblack sm:text-lg md:text-xl" placeholder="DD" required minlength="2" maxlength="2"  oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+                    <div class="error-text text-xs text-lightred italic py-2 hidden sm:block"> </div>
+                </div>
+
+                <div class="flex flex-col">
+                    <label for="month" class="font-poppins font-bold text-xs text-smokeygrey">MONTH</label>
+                    <input type="text" inputmode="numeric" id="month" name="month" class="w-full mt-2 rounded-lg border-[1px] border-lightgrey p-2  text-offblack text-base font-poppins font-bold focus:border-smokeygrey placeholder:text-base placeholder:text-smokeygrey placeholder:font-bold placeholder:font-poppins hover:border-offblack sm:text-lg md:text-xl" placeholder="MM" required minlength="2" maxlength="2" oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+                    <div class="error-text text-xs text-lightred italic py-2 hidden sm:block"> </div>
+                </div>
+
+                <div class="flex flex-col">
+                    <label for="year" class="font-poppins font-bold text-xs text-smokeygrey">YEAR</label>
+                    <input type="text" id="year" name="year" class="w-full mt-2 rounded-lg border-[1px] border-lightgrey p-2  text-offblack text-base font-poppins font-bold focus:border-smokeygrey placeholder:text-base placeholder:text-smokeygrey placeholder:font-bold placeholder:font-poppins hover:border-offblack sm:text-lg md:text-xl" placeholder="YYYY" required minlength="4" maxlength="4" oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+                    <div class="error-text text-xs text-lightred italic py-2 hidden sm:block"> </div>
+                </div>
+            </div>
+
+            <div class="relative flex items-center justify-center mt-8 after:absolute after:w-full after:h-[1px] after:left-0 after:top-[50%] after:translate-y-[-50%] after:bg-lightgrey sm:justify-end sm:mt-5 md:mt-3 md:w-[95%]">
+                <button type="submit" class="bg-purple p-3 rounded-full z-10 hover:bg-offblack sm:p-4" onclick="event.preventDefault(); validateForm()"> <img src="./assets/images/icon-arrow.svg" class="h-5 sm:h-7" alt="#"></button>
+            </div>
+        </form>
+
+        <div class="flex flex-col mt-7 space-y-1 sm:mt-5 md:mt-0">
+            <div class="flex items-center space-x-2">
+                <div class="diff-showcase text-purple text-4xl font-poppins font-[700] italic sm:text-5xl md:text-7xl">- -</div>
+                <div class="text-offblack text-4xl font-poppins font-[700] italic sm:text-5xl md:text-7xl">years</div>
+            </div>
+
+            <div class="flex items-center space-x-2">
+                <div class="diff-showcase text-purple text-4xl font-poppins font-[700] italic sm:text-5xl md:text-7xl">- -</div>
+                <div class="text-offblack text-4xl font-poppins font-[700] italic sm:text-5xl md:text-7xl">months</div>
+            </div>
+
+            <div class="flex items-center space-x-2">
+                <div class="diff-showcase text-purple text-4xl font-poppins font-[700] italic sm:text-5xl md:text-7xl">- -</div>
+                <div class="text-offblack text-4xl font-poppins font-[700] italic sm:text-5xl md:text-7xl">days</div>
+            </div>
+        </div>
+    </div>
+
+
+
+
+    <!--Scripts-->
+    <script>
+        const currentYear = new Date().getFullYear();
+        const currentMonth = new Date().getMonth();
+        const day = document.getElementById("day");
+        const month = document.getElementById("month")
+        const months29 = ["02"]
+        const months30 = ["04", "06" , "09" , "11"]
+        const months31 = ["01" , "03" , "05" , "07" , "08" , "10" , "12"]
+        const allmonths = ["Jan" , "Feb", "Mar" , "Apr" , "May", "Jun", "Jul" , "Aug", "Sep", "Oct", "Nov", "Dec"]
+        const year = document.getElementById("year")
+        var inputs = document.getElementsByTagName("input")
+        var labels = document.getElementsByTagName("label")
+        var errorTexts = document.getElementsByClassName("error-text")
+        const diffShowcases = document.getElementsByClassName("diff-showcase")
+
+
+        function validateForm() {
+            let valid = true;
+            for(var i = 0, max=inputs.length; i < max; i++){
+                if(inputs[i].value == ""){
+                    inputs[i].classList.add("error-border")
+                    errorTexts[i].innerHTML = "This field is required";
+                    valid = false;
+                }else{
+                    inputs[i].classList.remove("error-border")
+                };
+
+                if(inputs[i].classList.contains("error-border")){
+                    labels[i].classList.add("error-color")
+                    valid = false
+                }else{
+                    labels[i].classList.remove("error-color")
+                    errorTexts[i].innerHTML = ""
+                }
+            }
+
+            function checkValue(e , minvalue , maxvalue , minlength, maxlength) {
+                if (e.value < minvalue) {
+                    e.classList.add("error-border")
+                    valid = false
+                }
+
+                if (e.value > maxvalue) {
+                    e.classList.add("error-border")
+                    valid = false
+                }
+
+                if (e.value.length < minlength) {
+                    e.classList.add("error-border")
+                    valid = false
+                }
+
+                if (e.value.length > maxlength) {
+                    e.classList.add("error-border")
+                    valid = false
+                }
+            }
+  
+            if(year.value == currentYear & month.value > currentMonth){
+                year.classList.add("error-border")
+                month.classList.add("error-border")
+                valid = false
+                errorTexts[1].innerHTML = "Must be a valid month"
+            }   
+
+            
+            checkValue(day , 1 , 31, 2 , 2);
+            checkValue(month, 1, 12 , 2 , 2 );
+            checkValue(year, 1, currentYear , 4 , 4);
+
+            if( day.value > 31){
+                errorTexts[0].innerHTML = "Must be a valid day";
+                valid = false
+            }
+
+            if( month.value > 12){
+                errorTexts[1].innerHTML = "Must be a valid month";
+                valid = false
+            }
+
+            if( year.value > currentYear){
+                errorTexts[2].innerHTML = "Must be in the past"
+                valid = false
+            }
+
+            function syncDayMonth(monthsarray , maxvalue){
+                for(var i = 0, max= monthsarray.length; i < max; i++){
+                    if(month.value == monthsarray[i] & day.value > maxvalue ){
+                        day.classList.add("error-border");
+                        errorTexts[0].innerHTML = "Must be a valid date"
+                        valid = false
+                    }
+                }
+            }
+            syncDayMonth(months29 , 29);
+            syncDayMonth(months30 , 30);
+            syncDayMonth(months31 , 31);
+
+
+            for(var i = 0, max=inputs.length; i < max; i++){
+                if(inputs[i].classList.contains("error-border")){
+                    labels[i].classList.add("error-color")
+                    valid = false
+                }else{
+                    labels[i].classList.remove("error-color")
+                    errorTexts[i].innerHTML = ""
+                }
+            }
+
+            function calculateAge() {
+                var birthDate = new Date()
+                birthDate.setDate(day.value)
+                birthDate.setMonth(month.value - 1)
+                birthDate.setFullYear(year.value)
+                birthDate.setHours(0)
+                birthDate.setMinutes(0)
+                birthDate.setSeconds(0)
+                birthDate.setMilliseconds(0)
+
+                var currentDate = new Date();
+                currentDate.setHours(0)
+                currentDate.setMinutes(0)
+                currentDate.setSeconds(0)
+                currentDate.setMilliseconds(0)
+
+                let diffyears = currentDate.getFullYear() - birthDate.getFullYear()
+                let diffmonths = currentDate.getMonth() - birthDate.getMonth()
+                let diffdays = currentDate.getDate() - birthDate.getDate()
+
+                if( diffmonths < 0 || (diffmonths === 0 && diffdays < 0)){
+                    diffyears--;
+                    diffmonths +=12;
+                }
+
+                if( diffdays < 0){
+                    diffmonths-- ;
+                    const lastMonthDate = new Date(currentDate.getFullYear() , currentDate.getMonth() , 0);
+                    diffdays += lastMonthDate.getDate()
+                }
+
+                diffShowcases[0].innerHTML = diffyears;
+                diffShowcases[1].innerHTML = diffmonths;
+                diffShowcases[2].innerHTML = diffdays;
+            }
+            
+            if(!valid){
+                diffShowcases[0].innerHTML = "--";
+                diffShowcases[1].innerHTML = "--";
+                diffShowcases[2].innerHTML = "--";
+            }else {
+                calculateAge();
+            }
+
+
+        }
+        
+    </script>
+</body>
